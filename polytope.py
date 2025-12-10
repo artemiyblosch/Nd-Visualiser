@@ -6,7 +6,7 @@ class Polytope:
         self.structure = structure
         self.colors = colors
     
-    def draw_on(self,world : World, color : tuple[int,int,int] = (0,0,0)):
+    def draw_on(self,world : World, color : tuple[int,int,int] = None):
         colorL = [(-1,0,0) for i in self.structure[1]]
         for index in range(len(self.structure[-1])):
             if self.colors[index][0] == -1: continue

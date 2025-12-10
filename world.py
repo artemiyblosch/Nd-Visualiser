@@ -3,7 +3,7 @@ from time import sleep
 from PIL import Image,ImageDraw,ImageTk
 
 class World:
-    def __init__(self, projections : list[tuple[float, float]], size : tuple[int,int], bg : str, domain : tuple[tuple[int],tuple[int]]):
+    def __init__(self, projections : list, size : tuple[int,int], bg : str, domain : tuple[tuple[int],tuple[int]]):
         self.projections = projections
         self.size = size
         self.bg = bg

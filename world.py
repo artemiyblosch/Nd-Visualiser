@@ -14,8 +14,8 @@ class World:
         self.canvas = tk.Canvas(width=self.size[0],height=self.size[1], bg=self.bg)
         self.canvas.place(x=0,y=0)
 
-        self.image = Image.new('RGBA',self.size,(0,0,0,0))
-        self.draw = ImageDraw.Draw(self.image)
+        self.image = Image.new('RGB',self.size,self.bg)
+        self.draw = ImageDraw.Draw(self.image,"RGBA")
     
     def project_point(self, point : list[float]):
         for p in self.projections[::-1]:
@@ -28,8 +28,8 @@ class World:
         #self.image.save("image.png")
         self.image.save("image.png")
         img = ImageTk.PhotoImage(Image.open("image.png"))
-        self.canvas.create_image(10,10,anchor=tk.NW,image=img)
-        self.image = Image.new('RGB',self.size,(255,255,255))
+        self.canvas.create_image(0,0,anchor=tk.NW,image=img)
+        self.image = Image.new('RGB',self.size,self.bg)
         self.draw = ImageDraw.Draw(self.image, "RGBA")
     
     def convert_point(self,point : tuple[float, float]):

@@ -9,6 +9,7 @@ class Polytope:
     def draw_on(self,world : World, color : tuple[int,int,int] = None):
         colorL = [(-1,0,0) for i in self.structure[1]]
         for index in range(len(self.structure[-1])):
+            if self.colors == None: break
             if self.colors[index][0] == -1: continue
             cFacets = struct_bfs(self.structure,index)
             for j in cFacets:
@@ -56,7 +57,7 @@ def import_OFF(path : str) -> Polytope:
     count = list(map(int,file[0].split()))
     del file[0]
 
-    del count[2]
+    if len(count) > 2: del count[2]
     struct = []
     for i in count:
         tmp = []

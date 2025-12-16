@@ -42,6 +42,11 @@ class Polytope:
             self.structure[0][i] = a + [0]*(dimension-len(a))
         return self
     
+    def translate(self, direction : list[float]):
+        for i,v in enumerate(self.structure[0]):
+            self.structure[0][i] = [v + direction[j] for j,v in enumerate(v)]
+        return self
+    
 def import_OFF(path : str) -> Polytope:
     with open(path) as f:
         file = f.read().split("\n")

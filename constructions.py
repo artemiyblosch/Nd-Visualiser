@@ -30,7 +30,6 @@ def pyramidify(polytope : Polytope, point : list[float]):
     d = td.copy()
 
     if len(polytope.structure) == 3: return polytope
-    print(d)
     for dim in range(2,len(polytope.structure)-1):
         td = {}
         for index in range(count[dim]):
@@ -43,4 +42,60 @@ def pyramidify(polytope : Polytope, point : list[float]):
             td[index] = len(polytope.structure[dim + 1]) - 1
         d = td.copy()
 
+    return polytope
+
+def prismify(polytope : Polytope):
+    count = [len(i) for i in polytope.structure]
+
+    for i in range(count[0]):
+        vertex = polytope.structure[0][i]
+        polytope.structure[0].append(vertex + [-1])
+        polytope.structure[0][i] += [1]
+    
+    for dim in range(1,len(count)):
+        for facet in range(count[dim]):
+            tf = polytope.structure[dim][facet]
+            polytope.structure[dim].append([i + count[dim-1] for i in tf])
+
+    if count[-1] != 1:
+        polytope.structure.append([list(range(count[-1])),list(range(count[-1],2*count[-1]))])
+        count.append(2)
+    else:
+        polytope.structure.append([])
+        count.append(0)
+    
+    d = {}
+    for index in range(count[1]):
+        i = polytope.structure[1][index]
+        for j in range(len(i)-1):
+            if frozenset((i[j],i[j+1])) in d: continue
+
+            polytope.structure[1].append([i[j],i[j]+count[0],i[j+1]+count[0],i[j+1]])
+            d[frozenset((i[j],i[j+1]))] = len(polytope.structure[1]) - 1
+
+    td = {}
+    for index in range(count[1]):
+        i = polytope.structure[1][index]
+        tc = [index,index+count[1]]
+
+        for j in range(len(i)-1):
+            tc.append(d[frozenset((i[j],i[j+1]))])
+        polytope.structure[2].append(tc)
+        td[index] = len(polytope.structure[2]) - 1
+    d = td.copy()
+
+    for dim in range(2,len(polytope.structure)-1):
+        td = {}
+        for index in range(count[dim]):
+            i = polytope.structure[dim][index]
+            tc = [index,index+count[dim]]
+
+            for j in i:
+                tc.append(d[j])
+            polytope.structure[dim + 1].append(tc)
+            td[index] = len(polytope.structure[dim + 1]) - 1
+        d = td.copy()
+    
+    if count[-1] == 0: polytope.structure.pop()
+    polytope.colors = [(-1,0,0)]*len(polytope.structure[-1])
     return polytope

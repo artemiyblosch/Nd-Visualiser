@@ -67,7 +67,7 @@ def prismify(polytope : Polytope):
     d = {}
     for index in range(count[1]):
         i = polytope.structure[1][index]
-        for j in range(len(i)-1):
+        for j in range(-1,len(i)-1):
             if frozenset((i[j],i[j+1])) in d: continue
 
             polytope.structure[1].append([i[j],i[j]+count[0],i[j+1]+count[0],i[j+1]])
@@ -78,7 +78,7 @@ def prismify(polytope : Polytope):
         i = polytope.structure[1][index]
         tc = [index,index+count[1]]
 
-        for j in range(len(i)-1):
+        for j in range(-1,len(i)-1):
             tc.append(d[frozenset((i[j],i[j+1]))])
         polytope.structure[2].append(tc)
         td[index] = len(polytope.structure[2]) - 1

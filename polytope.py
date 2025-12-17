@@ -95,4 +95,37 @@ def struct_bfs(structure : list, facet : int):
         struct = struct[:-1]
 
     return facets
+
+def export_OFF(polytope : Polytope, path : str):
+    dim = len(polytope.structure[0][0])
+
+    count = [len(i) for i in polytope.structure]
+    d = set()
+    for index in range(count[1]):
+        i = polytope.structure[1][index]
+        for j in range(-1,len(i)-1):
+            d.add(frozenset((i[j],i[j+1])))
     
+    count.insert(2,len(d))
+    with open(path,"w") as file:
+        file.write(f"{dim}OFF\n")
+        file.write(" ".join(map(str,count)))
+        file.write("\n\n# Verticies\n")
+        for i in polytope.structure[0]:
+            file.write(" ".join(map(str,i)))
+            file.write("\n")
+        
+        for dim in range(1,len(polytope.structure)-1):
+            file.write(f"\n\n# {dim+1}-elements\n")
+            for i in polytope.structure[dim]:
+                file.write(str(len(i))+" ")
+                file.write(" ".join(map(str,i)))
+                file.write("\n")
+        
+        file.write(f"\n# {len(polytope.structure)}-elements\n")
+        for i,v in enumerate(polytope.structure[-1]):
+            file.write(str(len(v))+" ")
+            file.write(" ".join(map(str,v)))
+            if polytope.colors[i][0] != -1:
+                file.write(" "+" ".join(map(str,polytope.colors[i])))
+            file.write("\n")

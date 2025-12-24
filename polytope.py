@@ -2,10 +2,23 @@ from world import World
 from math import cos,sin
 
 class Polytope:
-    def __init__(self, structure, colors):
+    def __init__(self, structure, colors = None):
         self.structure = structure
         self.colors = colors
+        if colors == None:
+            self.colors = [(-1,0,0)] * len(structure[-1])
     
+    def __str__(self):
+        return f"Polytope:\n{"\n\n".join(
+            [f"{i} ({len(v)}): \n" + ", ".join(map(str,v)) 
+            for i,v in enumerate(self.structure)]
+        )}\n\nColors ({len(self.colors)}): {
+            ", ".join(map(
+                lambda a: f"({" ".join(map(str,a))})",
+                self.colors
+            ))
+        }"
+
     def draw_on(self,world : World, color : tuple[int,int,int] = None):
         colorL = [(-1,0,0) for i in self.structure[1]]
         for index in range(len(self.structure[-1])):
@@ -31,6 +44,8 @@ class Polytope:
             tp = (p[plane[0]],p[plane[1]])
             p[plane[0]] = tp[0]*cos(angle)+tp[1]*sin(angle)
             p[plane[1]] = -tp[0]*sin(angle)+tp[1]*cos(angle)
+            for i in range(len(p)):
+                p[i] += around_point[i] if around_point != None else 0
             return p
         for i in range(len(self.structure[0])):
             self.structure[0][i] = r(self.structure[0][i])
@@ -46,6 +61,14 @@ class Polytope:
         for i,v in enumerate(self.structure[0]):
             self.structure[0][i] = [v + direction[j] for j,v in enumerate(v)]
         return self
+    
+    @property
+    def center(self):
+        ret = [0] * len(self.structure[0][0])
+        for i in self.structure[0]:
+            for j,v in enumerate(i):
+                ret[j] += v
+        return [i/len(self.structure[0]) for i in ret]
     
 def import_OFF(path : str) -> Polytope:
     with open(path) as f:
@@ -126,6 +149,6 @@ def export_OFF(polytope : Polytope, path : str):
         for i,v in enumerate(polytope.structure[-1]):
             file.write(str(len(v))+" ")
             file.write(" ".join(map(str,v)))
-            if polytope.colors[i][0] != -1:
+            if i in polytope.colors and polytope.colors[i][0] != -1:
                 file.write(" "+" ".join(map(str,polytope.colors[i])))
             file.write("\n")

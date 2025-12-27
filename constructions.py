@@ -112,3 +112,29 @@ def polygon(sides : float | Fraction) -> Polytope:
         [[sin(i*angle), cos(i*angle)] for i in range(sides.numerator)],
         [list(range(sides.numerator))]
     ])
+
+def product(p1 : Polytope, p2 : Polytope) -> Polytope:
+    structure = [[] for _ in range(len(p1.structure)+len(p2.structure)-1)]
+
+    if len(p1.structure[-1]) == 1: dim1 = len(p1.structure)
+    else: dim1 = len(p1.structure) + 1
+
+    if len(p2.structure[-1]) == 1: dim2 = len(p2.structure)
+    else: dim2 = len(p2.structure) + 1
+
+    d = {}
+    for i in p2.structure[0]: pass
+
+
+def canonize(p : Polytope) -> Polytope:
+    new_faces = []
+    d = {}
+    p.structure.insert(1,[])
+    for face in p.structure[2]:
+        new_faces.append([])
+        for i in range(-1,len(face)-1):
+            if edge:=frozenset(face[i],face[i+1]) not in d:
+                p.structure[1].append((face[i],face[i+1]))
+                d[edge] = len(p.structure[1]) - 1
+            new_faces[-1].append(d[edge])
+    return p
